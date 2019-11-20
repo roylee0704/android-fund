@@ -7,6 +7,8 @@ import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
+import java.util.ArrayList;
+
 public class MainActivity extends AppCompatActivity {
 
 
@@ -27,6 +29,9 @@ public class MainActivity extends AppCompatActivity {
     private TextView mLifecycleDisplay;
 
 
+    private static final ArrayList<String> mLifecycleCallBacks = new ArrayList<>();
+
+
     /**
      * Called when the activity is first created. This is where you should do all of your normal
      * static set up: create views, bind data to lists, etc.
@@ -43,10 +48,15 @@ public class MainActivity extends AppCompatActivity {
         mLifecycleDisplay = (TextView) findViewById(R.id.tv_lifecycle_events_display);
 
         if (savedInstanceState != null && savedInstanceState.containsKey(LIFECYCLE_CALLBACKS_TEXT_KEY)) {
-
             String allPreviousLifecycleCallbacks = savedInstanceState.getString(LIFECYCLE_CALLBACKS_TEXT_KEY);
             mLifecycleDisplay.setText(allPreviousLifecycleCallbacks);
         }
+
+        for(int i = mLifecycleCallBacks.size()- 1; i>=0;i--) {
+            mLifecycleDisplay.append(mLifecycleCallBacks.get(i) + "\n");
+        }
+
+        mLifecycleCallBacks.clear();
 
         logAndAppend(ON_CREATE);
     }
@@ -88,12 +98,16 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onStop() {
         super.onStop();
+
+        mLifecycleCallBacks.add(0, ON_STOP);
         logAndAppend(ON_STOP);
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
+
+        mLifecycleCallBacks.add(0, ON_DESTROY);
         logAndAppend(ON_DESTROY);
     }
 
