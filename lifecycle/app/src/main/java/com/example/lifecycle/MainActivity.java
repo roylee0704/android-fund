@@ -21,6 +21,8 @@ public class MainActivity extends AppCompatActivity {
     private static final String ON_DESTROY = "onDestroy";
     private static final String ON_SAVE_INSTANCE_STATE = "onSaveInstanceState";
 
+    private static final String LIFECYCLE_CALLBACKS_TEXT_KEY = "callbacks";
+
 
     private TextView mLifecycleDisplay;
 
@@ -40,6 +42,12 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         mLifecycleDisplay = (TextView) findViewById(R.id.tv_lifecycle_events_display);
 
+        if (savedInstanceState != null && savedInstanceState.containsKey(LIFECYCLE_CALLBACKS_TEXT_KEY)) {
+
+            String allPreviousLifecycleCallbacks = savedInstanceState.getString(LIFECYCLE_CALLBACKS_TEXT_KEY);
+            mLifecycleDisplay.setText(allPreviousLifecycleCallbacks);
+        }
+
         logAndAppend(ON_CREATE);
     }
 
@@ -55,26 +63,48 @@ public class MainActivity extends AppCompatActivity {
         logAndAppend(ON_START);
     }
 
-
+    @Override
     protected void onResume() {
         super.onResume();
         logAndAppend(ON_RESUME);
     }
 
+    // COMPLETED (4) Override onPause, call super.onPause, and call logAndAppend with ON_PAUSE
+    /**
+     * Called when the system is about to start resuming a previous activity. This is typically
+     * used to commit unsaved changes to persistent data, stop animations and other things that may
+     * be consuming CPU, etc. Implementations of this method must be very quick because the next
+     * activity will not be resumed until this method returns.
+     *
+     * Followed by either onResume() if the activity returns back to the front, or onStop() if it
+     * becomes invisible to the user.
+     */
+    @Override
     protected void onPause() {
         super.onPause();
         logAndAppend(ON_PAUSE);
     }
 
+    @Override
     protected void onStop() {
         super.onStop();
         logAndAppend(ON_STOP);
     }
 
-
-    protected void OnDestroy() {
+    @Override
+    protected void onDestroy() {
         super.onDestroy();
         logAndAppend(ON_DESTROY);
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        logAndAppend(ON_SAVE_INSTANCE_STATE);
+
+        String lifecycleDisplayTextViewContents = mLifecycleDisplay.getText().toString();
+        outState.putString(LIFECYCLE_CALLBACKS_TEXT_KEY, lifecycleDisplayTextViewContents);
+
     }
 
     private void logAndAppend(String lifecycleEvent){
