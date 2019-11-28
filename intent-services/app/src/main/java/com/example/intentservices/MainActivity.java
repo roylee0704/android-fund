@@ -1,6 +1,7 @@
 package com.example.intentservices;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.NotificationCompat;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -14,6 +15,7 @@ import android.widget.Toast;
 
 import com.example.intentservices.sync.ReminderTasks;
 import com.example.intentservices.sync.WaterReminderIntentService;
+import com.example.intentservices.utilities.NotificationUtils;
 import com.example.intentservices.utilities.PreferenceUtilities;
 
 public class MainActivity extends AppCompatActivity implements
@@ -83,6 +85,10 @@ public class MainActivity extends AppCompatActivity implements
 
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
         prefs.unregisterOnSharedPreferenceChangeListener(this);
+    }
+
+    public void testNotification(View view) {
+        NotificationUtils.remindUserBecauseCharging(this);
     }
 
 }
